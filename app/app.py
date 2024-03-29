@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, render_template
 import pandas as pd
 import requests
 from time import sleep
@@ -7,7 +7,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-@app.route('/parse_habr_hubs')
+@app.route('/', methods=['GET'])
 def parse_habr_hubs():
     conn = sqlite3.connect('habr_hubs.db')
     cur = conn.cursor()
@@ -20,7 +20,7 @@ def parse_habr_hubs():
                     link TEXT
                 )''')
 
-    for p in range(1, 12):
+    for p in range(1, 5):
         url = f'https://habr.com/ru/hubs/page{p}/'
         r = requests.get(url)
         sleep(3)
@@ -42,10 +42,9 @@ def parse_habr_hubs():
 
     conn = sqlite3.connect('habr_hubs.db')
     df = pd.read_sql_query("SELECT * FROM hubs", conn)
-    df_json = df.to_json(orient='records')
     conn.close()
 
-    return jsonify(df_json)
+    return render_template('table.html', table = df.to_html(index=False))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', debug=True, port=8000)
