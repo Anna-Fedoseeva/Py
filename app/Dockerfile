@@ -1,11 +1,11 @@
-FROM python:3.8-slim
+FROM python:3.11
+
+RUN mkdir app
+COPY app app
+RUN ls -l
 
 WORKDIR /app
 
-COPY requirements.txt .
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
+RUN pip install -r requirements.txt
 
 CMD ["python", "app.py"]

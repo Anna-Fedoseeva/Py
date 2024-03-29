@@ -1,0 +1,9 @@
+version: '3.5'
+services:
+  scraper:
+    container_name: webReview
+    build:
+      context: .
+      dockerfile: ./app/Dockerfile
+    ports:
+      - 8000:8000
